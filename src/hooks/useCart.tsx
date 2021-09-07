@@ -115,7 +115,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
         throw new Error();
       }
     } catch {
-      toast.error("Error");
+      toast.error("Erro na alteração de quantidade do produto");
     }
   };
 
