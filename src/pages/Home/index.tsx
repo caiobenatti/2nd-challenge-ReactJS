@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { MdAddShoppingCart } from "react-icons/md";
 
 import { ProductList } from "./styles";
@@ -23,24 +23,32 @@ interface CartItemsAmount {
 
 const Home = (): JSX.Element => {
   const [products, setProducts] = useState<ProductFormatted[]>([]);
-  // const { addProduct, cart } = useCart();
+  const { addProduct, cart } = useCart();
 
-  // const cartItemsAmount = cart.reduce((sumAmount, product) => {
-  //   // TODO
-  // }, {} as CartItemsAmount)
+  const cartItemsAmount = cart.reduce((sumAmount, product) => {
+    sumAmount[product.id] = product.amount;
+    return sumAmount;
+  }, {} as CartItemsAmount);
+
+  setProducts([]);
 
   useEffect(() => {
     async function loadProducts() {
-      api
-        .get("products")
-        .then((response) => setProducts(response.data.products));
+      await api.get<Product[]>("products").then((response) =>
+        setProducts(
+          response.data.map((product) => ({
+            ...product,
+            priceFormatted: formatPrice(product.price),
+          }))
+        )
+      );
     }
 
     loadProducts();
   }, []);
 
   function handleAddProduct(id: number) {
-    // TODO
+    addProduct(id);
   }
 
   return (
@@ -48,7 +56,7 @@ const Home = (): JSX.Element => {
       {products.map((product) => {
         return (
           <li>
-            <img src={product.image} />
+            <img src={product.image} alt={product.title} />
             <strong>{product.title}</strong>
             <span>R$ {product.priceFormatted}</span>
             <button
