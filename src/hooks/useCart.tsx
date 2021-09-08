@@ -72,14 +72,15 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
   const removeProduct = (productId: number) => {
     try {
-      const newCart = [...cart];
-      const productIndex = newCart.findIndex(
+      const updatedCart = [...cart];
+      const productIndex = updatedCart.findIndex(
         (product) => product.id === productId
       );
 
       if (productIndex >= 0) {
-        newCart.splice(productIndex, 1);
-        setCart(newCart);
+        updatedCart.splice(productIndex, 1);
+        setCart(updatedCart);
+        localStorage.setItem("@RocketShoes:cart", JSON.stringify(updatedCart));
         return;
       } else {
         throw new Error();
@@ -113,6 +114,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
       if (productExists) {
         productExists.amount = amount;
         setCart(newCart);
+        localStorage.setItem("@RocketShoes:cart", JSON.stringify(newCart));
       } else {
         throw new Error();
       }
